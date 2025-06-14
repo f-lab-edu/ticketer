@@ -4,11 +4,13 @@ import com.ticketer.ticketing.domain.entity.User;
 import com.ticketer.ticketing.domain.dto.CreateUserRequest;
 import com.ticketer.ticketing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class UserService{
 
     private final UserRepository userRepository;
@@ -22,10 +24,12 @@ public class UserService{
     public User createUser(CreateUserRequest request){
         //이메일 중복 검사
         if(checkEmail(request.getEmail())){
+            log.warn("이메일 중복:{}",request.getEmail());
             throw new IllegalArgumentException("이미 등록된 이메일입니다.");
         };
         //전화번호 중복 검사
         if(checkPhone(request.getPhone())){
+            log.warn("전화번호 중복:{}",request.getPhone());
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         };
 
@@ -40,7 +44,11 @@ public class UserService{
                 .phone(request.getPhone())
                 .address(request.getAddress()).build();
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        log.info("신규 사용자 생성 완료: userEmail={}",savedUser.getEmail());
+
+        return savedUser;
     }
 
     /**

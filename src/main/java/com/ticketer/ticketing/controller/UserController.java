@@ -6,6 +6,7 @@ import com.ticketer.ticketing.domain.entity.User;
 import com.ticketer.ticketing.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
+@Log4j2
 public class UserController {
 
     private final UserService userService;
@@ -24,6 +26,8 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<CreateUserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+
+        log.debug("신규 사용자 생성 요청:{}",request);
         User user = userService.createUser(request);
 
         CreateUserResponse responseDto = CreateUserResponse.builder()
@@ -46,6 +50,7 @@ public class UserController {
      */
     @GetMapping("/email-check")
     public boolean checkEmail(@RequestParam String email){
+        log.debug("이메일 중복체크 요청:{}",email);
         return userService.checkEmail(email);
     }
 
@@ -56,6 +61,7 @@ public class UserController {
      */
     @GetMapping("/phone-check")
     public boolean checkPhone(@RequestParam String phone){
+        log.debug("전화번호 중복체크 요청:{}",phone);
         return userService.checkPhone(phone);
     }
 
