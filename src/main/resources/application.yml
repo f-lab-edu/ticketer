@@ -4,3 +4,21 @@ spring:
     include: mysql
 logging:
   config: classpath:log4j2-${spring.profiles.active}.yml
+---
+#이메일 설정
+spring:
+  mail:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "-"
+    password: "-"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 3000           #데이터 읽기 대기 시간
+          connectiontimeout: 5000 #SMTP 서버와의 연결 시간 제한
+          writetimeout: 5000      #메일 쓰기 작업 시간 제한
+

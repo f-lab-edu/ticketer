@@ -42,6 +42,9 @@ dependencies {
 
 	//DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	//mail
+	runtimeOnly 'com.sun.mail:jakarta.mail:2.0.1'
+	implementation'org.springframework.boot:spring-boot-starter-mail'
 
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
