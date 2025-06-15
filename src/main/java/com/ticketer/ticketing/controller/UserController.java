@@ -65,6 +65,24 @@ public class UserController {
         return userService.checkPhone(phone);
     }
 
+    /**
+     * 신규회원 이메일 인증번호 전송
+     * [인증번호 재전송] 버튼 클릭 시 호출
+     * @param
+     * @return
+     */
+    @PostMapping("/email-verification")
+    public ResponseEntity<?> sendEmailVerifications(@RequestParam String email){
+
+        //로그인 기능 완료되면 사용자 정보에서 email을 가져오도록 수정 예정
+
+        log.info("이메일 인증 요청:{}",email);
+
+        userService.sendEmailVerifications(email);
+
+        return ResponseEntity.ok("인증 메일 전송 완료");
+    }
+
 }
 
 
