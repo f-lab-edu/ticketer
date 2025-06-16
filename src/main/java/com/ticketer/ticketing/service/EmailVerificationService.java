@@ -1,5 +1,8 @@
 package com.ticketer.ticketing.service;
 
+import com.ticketer.ticketing.domain.entity.VerificationCode;
+import com.ticketer.ticketing.domain.entity.VerificationCodeId;
+import com.ticketer.ticketing.repository.VerificationCodeRepository;
 import com.ticketer.ticketing.util.RandomNumber;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class EmailVerificationService {
 
+    private final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
 
     /**
@@ -22,8 +26,28 @@ public class EmailVerificationService {
         //1.인증번호 생성
         String code = RandomNumber.generateNumber(6);
 
-        //2. 인증 코드 생성 및 이메일 전송
+        //2. db저장
+        saveVerificationCode(userId, code);
+
+        //3. 인증 코드 생성 및 이메일 전송
         emailService.sendEmailVerification(email, code);
+    }
+
+    /**
+     * 인증 코드 저장
+     * @Param code
+     */
+    public void saveVerificationCode(Long userId, String code){
+        //저장을 위해 VerificationCode 객체로 변환
+        VerificationCode vc = VerificationCode.builder()
+                .id(new VerificationCodeId(userId,code))
+                .verifiedYn('N')
+                .build();
+
+        VerificationCode savedCodeInfo = verificationCodeRepository.save(vc);
+
+        log.debug("인증 코드 저장:{}",savedCodeInfo);
+
     }
 
 }
