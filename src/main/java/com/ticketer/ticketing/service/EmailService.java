@@ -7,6 +7,7 @@
     import org.springframework.beans.factory.annotation.Value;
     import org.springframework.mail.javamail.JavaMailSender;
     import org.springframework.mail.javamail.MimeMessageHelper;
+    import org.springframework.scheduling.annotation.Async;
     import org.springframework.stereotype.Service;
 
     @RequiredArgsConstructor
@@ -23,8 +24,8 @@
          * @param email 인증번호를 보낼 회원 이메일
          * @param code  인증번호
          */
-        //메서드명 수정
-        public void sendEmailVerifications(String email, String code) {
+        @Async
+        public void sendEmailVerification(String email, String code) {
             MimeMessage msg = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(msg);
 
@@ -40,7 +41,6 @@
                 log.info("인증 메일 전송 성공:{}",email);
             }catch(MessagingException e){
                 log.error("인증 메일 전송 실패:{}",email);
-                throw new RuntimeException(e);
             }
 
         }
