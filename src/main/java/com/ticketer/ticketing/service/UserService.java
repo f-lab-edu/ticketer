@@ -3,7 +3,6 @@ package com.ticketer.ticketing.service;
 import com.ticketer.ticketing.domain.entity.User;
 import com.ticketer.ticketing.domain.dto.CreateUserRequest;
 import com.ticketer.ticketing.repository.UserRepository;
-import com.ticketer.ticketing.util.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,7 @@ public class UserService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService mailService;
+    private final EmailVerificationService emailVerificationService;
 
     /**
      * 회원가입
@@ -49,7 +48,7 @@ public class UserService{
         User savedUser = userRepository.save(user);
 
         //신규회원 이메일 인증 코드 발송
-        sendEmailVerifications(user.getEmail());
+        emailVerificationService.sendEmailVerification(savedUser.getId(),user.getEmail());
 
         log.info("신규 사용자 생성 완료: userEmail={}",savedUser.getEmail());
 
@@ -74,13 +73,4 @@ public class UserService{
         return userRepository.existsByPhone(phone);
     }
 
-    /**
-     * 신규회원 인증 이메일 전송
-     * @param email 인증번호를 보낼 회원 이메일
-     */
-    public void sendEmailVerifications(String email) {
-        //인증 코드 생성 및 이메일 전송
-        mailService.sendEmailVerifications(email, RandomNumber.generateNumber(6));
-
-    }
 }

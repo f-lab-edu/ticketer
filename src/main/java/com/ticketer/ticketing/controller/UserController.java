@@ -3,6 +3,7 @@ package com.ticketer.ticketing.controller;
 import com.ticketer.ticketing.domain.dto.CreateUserRequest;
 import com.ticketer.ticketing.domain.dto.CreateUserResponse;
 import com.ticketer.ticketing.domain.entity.User;
+import com.ticketer.ticketing.service.EmailVerificationService;
 import com.ticketer.ticketing.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final EmailVerificationService emailVerificationService;
 
     /**
      * 회원가입
@@ -74,11 +76,11 @@ public class UserController {
     @PostMapping("/email-verification")
     public ResponseEntity<?> sendEmailVerifications(@RequestParam String email){
 
-        //로그인 기능 완료되면 사용자 정보에서 email을 가져오도록 수정 예정
-
+        //로그인 기능 완료되면 사용자 정보에서 id, email을 가져오도록 수정 예정
+        Long userId = 24L;
         log.info("이메일 인증 요청:{}",email);
 
-        userService.sendEmailVerifications(email);
+        emailVerificationService.sendEmailVerification(userId, email);
 
         return ResponseEntity.ok("인증 메일 전송 완료");
     }
