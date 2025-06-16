@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class User{
@@ -70,6 +69,13 @@ public class User{
         this.address = address;
         this.status = UserStatus.UNVERIFIED;
         this.role = UserRole.USER;
+    }
+
+    /**
+     * 이메일 인증 완료 회원 상태 변경
+     */
+    public void updateUserStatusToActive(){
+        this.status = UserStatus.ACTIVE;
     }
 
 }

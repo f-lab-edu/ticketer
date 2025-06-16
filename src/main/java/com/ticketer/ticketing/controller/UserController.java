@@ -85,6 +85,24 @@ public class UserController {
         return ResponseEntity.ok("인증 메일 전송 완료");
     }
 
+    /**
+     * 인증번호 유효성 검사
+     */
+    @PostMapping("/code-verification")
+    public ResponseEntity<?> verifyCode(@RequestParam String code){
+        log.info("인증코드입력:{} ",code);
+
+        //로그인 기능 완료되면 사용자 정보에서 id, email을 가져오도록 수정 예정
+        Long userId = 24L;
+
+        boolean verified = emailVerificationService.verifyCode(userId, code);
+
+        if(!verified){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 인증 실패");
+        }
+        return ResponseEntity.ok().body("이메일 인증 완료");
+    }
+
 }
 
 
