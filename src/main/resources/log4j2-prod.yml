@@ -1,0 +1,32 @@
+#운영용 로깅 설정
+Configuration:
+  Appenders:
+    #콘솔 출력
+    CONSOLE:
+      name: "CONSOLE"
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %p %c - %m%n"
+    #파일 출력(롤링)
+    RollingFile:
+      name: "FILE"
+      fileName: "logs/ticketer.log"
+      #롤링파일명 형식
+      filePattern: "logs/%d{yyyy-MM}/%d{yyyy-MM-dd}.%i.log" #d{}:로깅 날짜, %i:인덱스
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %p %c - %m%n"
+      Policies:
+        #날짜 기반 롤링
+        TimeBasedTriggeringPolicy:
+          interval: 1             #하루마다 롤링(filePattern %d{..}최소 단위 기준)
+        #크기 기반 롤링
+        SizeBasedTriggerIngPolicy:
+          size: "100MB"           #100MB 초과 시 롤링
+      DefaultRolloverStrategy:
+        fileIndex: max
+        max: 30                   #로그파일 30개까지만 보관
+  Loggers:
+    Root:
+      level: "INFO"
+      AppenderRef:
+        - ref: "CONSOLE"
+        - ref: "FILE"
