@@ -32,7 +32,7 @@ public class SecurityConfig {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/users/email-verification").authenticated()
+                    .requestMatchers("/users/email-verification","/users/code-verification").authenticated()
                     .anyRequest().permitAll()
                 )
                 .logout(AbstractHttpConfigurer::disable)

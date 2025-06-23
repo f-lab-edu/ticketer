@@ -3,6 +3,8 @@ package com.ticketer.ticketing.controller;
 import com.ticketer.ticketing.domain.dto.CreateUserRequest;
 import com.ticketer.ticketing.domain.dto.CreateUserResponse;
 import com.ticketer.ticketing.domain.entity.User;
+import com.ticketer.ticketing.security.dto.AccountContext;
+import com.ticketer.ticketing.security.dto.AccountDto;
 import com.ticketer.ticketing.service.EmailVerificationService;
 import com.ticketer.ticketing.service.UserService;
 import jakarta.validation.Valid;
@@ -10,7 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @RestController
@@ -74,13 +80,13 @@ public class UserController {
      * @return
      */
     @PostMapping("/email-verification")
-    public ResponseEntity<?> sendEmailVerifications(@RequestParam String email){
+    public ResponseEntity<?> sendEmailVerifications(@AuthenticationPrincipal AccountContext accountContext) {
 
-        //로그인 기능 완료되면 사용자 정보에서 id, email을 가져오도록 수정 예정
-        Long userId = 24L;
-        log.info("이메일 인증 요청:{}",email);
+        AccountDto accountDto = accountContext.getAccountDto();
 
-        emailVerificationService.sendEmailVerification(userId, email);
+        log.info("이메일 인증 요청:{}",accountDto.getEmail());
+
+        emailVerificationService.sendEmailVerification(accountDto.getId(), accountDto.getEmail());
 
         return ResponseEntity.ok("인증 메일 전송 완료");
     }
@@ -89,13 +95,13 @@ public class UserController {
      * 인증번호 유효성 검사
      */
     @PostMapping("/code-verification")
-    public ResponseEntity<?> verifyCode(@RequestParam String code){
-        log.info("인증코드입력:{} ",code);
+    public ResponseEntity<?> verifyCode(@AuthenticationPrincipal AccountContext accountContext, @RequestParam String code){
 
-        //로그인 기능 완료되면 사용자 정보에서 id, email을 가져오도록 수정 예정
-        Long userId = 24L;
+        AccountDto accountDto = accountContext.getAccountDto();
 
-        boolean verified = emailVerificationService.verifyCode(userId, code);
+        log.info("인증번호 유효성 검사:{} ",accountDto.getEmail());
+
+        boolean verified = emailVerificationService.verifyCode(accountDto.getId(), code);
 
         if(!verified){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 인증 실패");
